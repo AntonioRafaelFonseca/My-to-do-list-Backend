@@ -40,9 +40,9 @@ def get_items():
 def add_item():
     dados = request.get_json()
     if not dados or 'prompt' not in dados:
-        return jsonify({"erro": "O campo 'nome' é obrigatório"}), 400
+        return jsonify({"erro": "O campo 'prompt' é obrigatório"}), 400
     
-    novo_item = Task(importance=dados.get('importance', 2), prompt=dados.get('prompt'))
+    novo_item = Task(importance=dados.get('importance'), prompt=dados.get('prompt'))
     db.session.add(novo_item)
     db.session.commit()
     return jsonify(novo_item.to_dict()), 201
