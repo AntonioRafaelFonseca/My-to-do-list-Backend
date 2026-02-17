@@ -47,5 +47,26 @@ def add_item():
     db.session.commit()
     return jsonify(novo_item.to_dict()), 201
 
+@app.route('/items/delete_all', methods=['DELETE'])
+def delete_all():
+    try:
+        # Apaga todos os registos da tabela Task
+        db.session.query(Task).delete()
+        db.session.commit()
+        return jsonify({"mensagem": "Todos os itens foram apagados!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"erro": str(e)}), 500
+
+@app.route('/items/<int:item_id>', methods=['DELETE'])
+def delete_item(item_id):
+    item = Task.query.get(item_id) # Procura o item pelo ID
+    if not item:
+        return jsonify({"erro": "Item não encontrado"}), 404
+    
+    db.session.delete(item) # Marca para apagar
+    db.session.commit() # Confirma a alteração na DB
+    return jsonify({"mensagem": "Item apagado com sucesso!"}), 200
+
 if __name__ == '__main__':
     app.run(debug=True)
